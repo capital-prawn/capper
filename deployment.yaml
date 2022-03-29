@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: capper-kubernetes-webhook
+  namespace: capper
+spec:
+  selector:
+    matchLabels:
+      app: capper-kubernetes-webhook
+  template:
+    metadata:
+      labels:
+        app: capper-kubernetes-webhook
+    spec:
+      containers:
+        - image: capper-kubernetes-webhook:latest
+          name: capper-kubernetes-webhook
+          volumeMounts:
+            - name: tls
+              mountPath: "/etc/mutating-admission-webhook/tls"
+      volumes:
+        - name: tls
+          secret:
+            secretName: capper-kubernetes-webhook-tls
