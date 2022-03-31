@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/capitalprawn/capper/deployments"
-	"github.com/capitalprawn/capper/pods"
+	"github.com/capital-prawn/capper/deployments"
+	"github.com/capital-prawn/capper/pods"
 )
 
 // NewServer creates and return a http.Server

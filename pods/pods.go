@@ -4,7 +4,7 @@ package pods
 import (
 	"encoding/json"
 
-	admissionController "github.com/capitalprawn/capper"
+	admissioncontroller "github.com/capital-prawn/capper"
 
 	v1 "k8s.io/api/core/v1"
 )

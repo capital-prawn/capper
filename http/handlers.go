@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 
-	admissioncontroller "github.com/capitalprawn/capper"
+	admissioncontroller "github.com/capital-prawn/capper"
 
 	"k8s.io/api/admission/v1beta1"
 	admission "k8s.io/api/admission/v1beta1"

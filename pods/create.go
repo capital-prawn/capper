@@ -3,7 +3,7 @@ package pods
 import (
 	"strings"
 
-	admissionController "github.com/capitalprawn/capper"
+	admissioncontroller "github.com/capital-prawn/capper"
 
 	"k8s.io/api/admission/v1beta1"
 	v1 "k8s.io/api/core/v1"

@@ -3,7 +3,7 @@ package deployments
 import (
 	"encoding/json"
 
-	admissioncontroller "github.com/capitalprawn/capper"
+	admissioncontroller "github.com/capital-prawn/capper"
 
 	v1 "k8s.io/api/apps/v1"
 )
