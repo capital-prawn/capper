@@ -5,4 +5,4 @@ build:
 	cd cmd && go build -o capper && mv capper ../capper
 
 container:
-	docker build -t capper .
+	podman build -t capper .

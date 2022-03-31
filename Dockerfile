@@ -1,2 +1,7 @@
-FROM golang:1.18
+FROM alpine
 
+WORKDIR /app
+
+ADD capper /app/
+ENTRYPOINT /capper
+EXPOSE 8443
