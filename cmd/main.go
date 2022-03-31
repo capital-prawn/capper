@@ -12,18 +12,20 @@ import (
 	// metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 var (
-port string
+	port string
+	tlskey string
+	tlscert string
 )
 
 func main() {
-	// flag.StringVar(&tlscert, "tlscert", "/etc/certs/tls.crt", "Path to the TLS certificate")
-	// flag.StringVar(&tlskey, "tlskey", "/etc/certs/tls.key", "Path to the TLS key")
+	flag.StringVar(&tlscert, "tlscert", "/etc/certs/tls.crt", "Path to the TLS certificate")
+	flag.StringVar(&tlskey, "tlskey", "/etc/certs/tls.key", "Path to the TLS key")
 	flag.StringVar(&port, "port", "8443", "The port to listen")
 	flag.Parse()
 
 	server := http.NewServer(port)
 	go func() {
-		if err := server.ListenAndServe(); err != nil {
+		if err := server.ListenAndServeTLS(tlscert, tlskey); err != nil {
 			log.Errorf("Failed to listen and serve: %v", err)
 		}
 	}()
