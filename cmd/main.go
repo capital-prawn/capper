@@ -1,18 +1,11 @@
 package main
 
-// http/server.go
-func NewServer(port string) *http.Server {
-    // Instances hooks
-    podsValidation := pods.NewValidationHook()
-    // Routers
-    ah := newAdmissionHandler()
-    mux := http.NewServeMux()
-    mux.Handle("/validate/pods", ah.Serve(podsValidation)) // The path of the webhook for Pod validation.
-    return &http.Server{
-        Addr:    fmt.Sprintf(":%s", port),
-        Handler: mux,
-    }
-}
+import (
+	"net/http"
+	"fmt"
+	core "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+)
 
 // cmd/main.go
 func main() {

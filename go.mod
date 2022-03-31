@@ -1,3 +1,3 @@
-module github.com/fhaynes/capper
+module github.com/capitalprawn/capper
 
-go 1.16
+go 1.18
