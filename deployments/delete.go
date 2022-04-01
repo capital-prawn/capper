@@ -4,11 +4,11 @@ package deployments
 import (
 	admissioncontroller "github.com/capital-prawn/capper"
 
-	"k8s.io/api/admission/v1beta1"
+	"k8s.io/api/admission/v1"
 )
 
 func validateDelete() admissioncontroller.AdmitFunc {
-	return func(r *v1beta1.AdmissionRequest) (*admissioncontroller.Result, error) {
+	return func(r *v1.AdmissionRequest) (*admissioncontroller.Result, error) {
 		dp, err := parseDeployment(r.OldObject.Raw)
 		if err != nil {
 			return &admissioncontroller.Result{Msg: err.Error()}, nil

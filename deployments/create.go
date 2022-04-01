@@ -3,7 +3,7 @@ package deployments
 import (
 	admissioncontroller "github.com/capital-prawn/capper"
 
-	"k8s.io/api/admission/v1beta1"
+	"k8s.io/api/admission/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	// corev1 "k8s.io/client-go/applyconfigurations/core/v1"
@@ -13,7 +13,7 @@ import (
 )
 
 func validateCreate() admissioncontroller.AdmitFunc {
-	return func(r *v1beta1.AdmissionRequest) (*admissioncontroller.Result, error) {
+	return func(r *v1.AdmissionRequest) (*admissioncontroller.Result, error) {
 
 
 		

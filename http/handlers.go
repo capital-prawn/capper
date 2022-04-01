@@ -8,8 +8,8 @@ import (
 
 	admissioncontroller "github.com/capital-prawn/capper"
 
-	"k8s.io/api/admission/v1beta1"
-	admission "k8s.io/api/admission/v1beta1"
+	"k8s.io/api/admission/v1"
+	admission "k8s.io/api/admission/v1"
 	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
@@ -66,8 +66,8 @@ func (h *admissionHandler) Serve(hook admissioncontroller.Hook) http.HandlerFunc
 			return
 		}
 
-		admissionResponse := v1beta1.AdmissionReview{
-			Response: &v1beta1.AdmissionResponse{
+		admissionResponse := v1.AdmissionReview{
+			Response: &v1.AdmissionResponse{
 				UID:     review.Request.UID,
 				Allowed: result.Allowed,
 				Result:  &meta.Status{Message: result.Msg},

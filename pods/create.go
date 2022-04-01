@@ -5,12 +5,12 @@ import (
 
 	admissioncontroller "github.com/capital-prawn/capper"
 
-	"k8s.io/api/admission/v1beta1"
+	v1a "k8s.io/api/admission/v1"
 	v1 "k8s.io/api/core/v1"
 )
 
 func validateCreate() admissioncontroller.AdmitFunc {
-	return func(r *v1beta1.AdmissionRequest) (*admissioncontroller.Result, error) {
+	return func(r *v1a.AdmissionRequest) (*admissioncontroller.Result, error) {
 		pod, err := parsePod(r.Object.Raw)
 		if err != nil {
 			return &admissioncontroller.Result{Msg: err.Error()}, nil
@@ -27,7 +27,7 @@ func validateCreate() admissioncontroller.AdmitFunc {
 }
 
 func mutateCreate() admissioncontroller.AdmitFunc {
-	return func(r *v1beta1.AdmissionRequest) (*admissioncontroller.Result, error) {
+	return func(r *v1a.AdmissionRequest) (*admissioncontroller.Result, error) {
 		var operations []admissioncontroller.PatchOperation
 		pod, err := parsePod(r.Object.Raw)
 		if err != nil {

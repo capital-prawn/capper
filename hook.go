@@ -3,7 +3,7 @@ package admissioncontroller
 import (
 	"fmt"
 
-	admission "k8s.io/api/admission/v1beta1"
+	admission "k8s.io/api/admission/v1"
 )
 
 // Result contains the result of an admission request
