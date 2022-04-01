@@ -1,9 +1,9 @@
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
- name: "capper.priceline.com"
+ name: "capper-kubernetes-hook.capper.svc"
 webhooks:
- - name: "capper.priceline.com"
+ - name: "capper-kubernetes-hook.capper.svc"
    namespaceSelector:
      matchLabels:
        admission-webhook: enabled
@@ -17,6 +17,6 @@ webhooks:
      service:
        namespace: capper
        name: capper-kubernetes-webhook
-       path: /mutate-pods
+       path: /mutate/pods
        port: 443
      caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUMzREND...
