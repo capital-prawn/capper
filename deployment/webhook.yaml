@@ -9,7 +9,7 @@ webhooks:
        admission-webhook: enabled
    rules:
      - apiGroups: [""]
-       apiVersions: ["v1"]
+       apiVersions: ["v1beta1"]
        operations: ["CREATE"]
        resources: ["pods"]
        scope: "*"

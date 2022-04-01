@@ -4,6 +4,8 @@ metadata:
   name: capper-kubernetes-webhook
   namespace: capper
 spec:
+  type: ExternalName
+  externalName: capper-kubernetes-webhook.capper.svc
   ports:
     - port: 8443
       protocol: TCP

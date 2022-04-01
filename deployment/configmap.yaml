@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: franks-limit-suggester
+data:
+  global_cpu_request_cap: 4
+  cpu_request_caps: null
+  namespace_whitelist:
+    - kube-system
+    - default
