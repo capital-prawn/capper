@@ -14,10 +14,14 @@ spec:
     spec:
       containers:
         - image: capper-kubernetes-webhook:latest
+          imagePullPolicy: Always
           name: capper-kubernetes-webhook
           volumeMounts:
             - name: tls
-              mountPath: "/etc/mutating-admission-webhook/tls"
+              mountPath: "/etc/certs"
+          resources:
+            requests: {}
+            limits: {}
       volumes:
         - name: tls
           secret:
