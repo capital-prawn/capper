@@ -3,5 +3,5 @@ FROM alpine
 WORKDIR /app
 
 ADD capper /app/
-ENTRYPOINT /capper
+ENTRYPOINT /app/capper
 EXPOSE 8443

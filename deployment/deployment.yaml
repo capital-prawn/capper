@@ -22,6 +22,7 @@ spec:
           resources:
             requests: {}
             limits: {}
+      serviceAccountName: capper
       volumes:
         - name: tls
           secret:
