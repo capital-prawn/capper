@@ -23,6 +23,8 @@ func validateCreate() admissioncontroller.AdmitFunc {
 			return &admissioncontroller.Result{Msg: "Unable to get configmap"}, nil
 		}
 
+		log.Infof("Raw ")
+
 		dp, err := parseDeployment(r.Object.Raw)
 		if err != nil {
 			return &admissioncontroller.Result{Msg: err.Error()}, nil
@@ -30,8 +32,8 @@ func validateCreate() admissioncontroller.AdmitFunc {
 
 		for _, namespace := range cm.NamespaceWhitelist {
 			log.Infof("Lookup namespaceLOG: %s", namespace)
-			log.Infof("Deployment Namespace: %s", dp.ObjectMeta.Namespace) // how to get namespace?
-			if namespace == dp.Namespace {
+			log.Infof("Deployment Namespace: %s", r.Namespace) // how to get namespace?
+			if namespace == r.Namespace {
 				return &admissioncontroller.Result{Msg: "Deployment is in a whitelisted namespace, skipping"}, nil
 			}
 		}
