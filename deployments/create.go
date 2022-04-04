@@ -34,7 +34,7 @@ func validateCreate() admissioncontroller.AdmitFunc {
 			log.Infof("Lookup namespaceLOG: %s", namespace)
 			log.Infof("Deployment Namespace: %s", r.Namespace) // how to get namespace?
 			if namespace == r.Namespace {
-				return &admissioncontroller.Result{Msg: "Deployment is in a whitelisted namespace, skipping"}, nil
+				return &admissioncontroller.Result{Allowed: true, Msg: "Deployment is in a whitelisted namespace, skipping"}, nil
 			}
 		}
 
