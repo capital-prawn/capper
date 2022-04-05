@@ -6,8 +6,9 @@ import (
 	"k8s.io/api/admission/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
-	// corev1 "k8s.io/client-go/applyconfigurations/core/v1"
+	c "k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	
 	"encoding/json"
 	"context"
 	log "k8s.io/klog/v2"
@@ -38,8 +39,25 @@ func validateCreate() admissioncontroller.AdmitFunc {
 			}
 		}
 
-		if dp.Namespace == "special" {
-			return &admissioncontroller.Result{Msg: "You cannot create a deployment in `special` namespace."}, nil
+		// // Now let's set it to the global cap
+		global_cap := c.MustParse(cm.GlobalCap)
+		
+		if err != nil {
+			return &admissioncontroller.Result{Allowed: false, Msg: "Global CPU cap in config map was not able to be converted to an integer"}, nil
+		}
+
+		var t1 int64 = 0
+		var t2 int64 = 0
+
+		for _, container := range dp.Spec.Template.Spec.Containers {
+			cpu := container.Resources.Requests["Cpu"]
+			t1, _ = cpu.AsInt64()
+			t2, _ = global_cap.AsInt64()
+			
+
+			if t1 > t2 {
+				return &admissioncontroller.Result{Allowed: false, Msg: "CPU request above global CPU cap"}, nil
+			}
 		}
 
 		return &admissioncontroller.Result{Allowed: true}, nil
