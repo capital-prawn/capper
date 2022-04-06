@@ -35,8 +35,6 @@ func validateCreate() admissioncontroller.AdmitFunc {
 		log.Infof("Parsed ConfigMap is %v", cm)
 
 		for _, namespace := range cm.NamespaceWhitelist {
-			log.Infof("Lookup namespaceLOG: %s", namespace)
-			log.Infof("Deployment Namespace: %s", r.Namespace) // how to get namespace?
 			if namespace == r.Namespace {
 				return &admissioncontroller.Result{Allowed: true, Msg: "Deployment is in a whitelisted namespace, skipping"}, nil
 			}
@@ -52,6 +50,10 @@ func validateCreate() admissioncontroller.AdmitFunc {
 		var t1 int64 = 0
 		var t2 int64 = 0
 
+		log.Infof("Spec is: %s", dp.Spec)
+		log.Infof("Template is: %s", dp.Spec.Template)
+		log.Infof("TemplateSpec is: %s", dp.Spec.Template.Spec)
+		log.Infof("Containers are: %s", dp.Spec.Template.Spec.Containers)
 		for _, container := range dp.Spec.Template.Spec.Containers {
 			
 			cpu := container.Resources.Requests["Cpu"]
