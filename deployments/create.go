@@ -24,7 +24,7 @@ func validateCreate() admissioncontroller.AdmitFunc {
 			return &admissioncontroller.Result{Msg: "Unable to get configmap"}, nil
 		}
 
-		log.Infof("Raw ")
+		log.Infof("Raw: %s\n", r.Object.Raw)
 
 		dp, err := parseDeployment(r.Object.Raw)
 		if err != nil {
@@ -54,6 +54,7 @@ func validateCreate() admissioncontroller.AdmitFunc {
 		log.Infof("Template is: %s", dp.Spec.Template)
 		log.Infof("TemplateSpec is: %s", dp.Spec.Template.Spec)
 		log.Infof("Containers are: %s", dp.Spec.Template.Spec.Containers)
+		log.Infof("First ")
 		for _, container := range dp.Spec.Template.Spec.Containers {
 			
 			cpu := container.Resources.Requests["Cpu"]
