@@ -50,13 +50,16 @@ func validateCreate() admissioncontroller.AdmitFunc {
 		var t2 int64 = 0
 
 		for _, container := range dp.Spec.Template.Spec.Containers {
+			
 			cpu := container.Resources.Requests["Cpu"]
 			t1, _ = cpu.AsInt64()
 			t2, _ = global_cap.AsInt64()
-			
+			log.Infof("Checking container request %s against %s", t1, t2)
 
 			if t1 > t2 {
 				return &admissioncontroller.Result{Allowed: false, Msg: "CPU request above global CPU cap"}, nil
+			} else {
+				log.Infof("Container req %s is less than global cap of %s", t1, t2)
 			}
 		}
 
