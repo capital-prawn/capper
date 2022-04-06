@@ -31,6 +31,9 @@ func validateCreate() admissioncontroller.AdmitFunc {
 			return &admissioncontroller.Result{Msg: err.Error()}, nil
 		}
 
+		log.Infof("Parsed deployment object is %v", dp)
+		log.Infof("Parsed ConfigMap is %v", cm)
+
 		for _, namespace := range cm.NamespaceWhitelist {
 			log.Infof("Lookup namespaceLOG: %s", namespace)
 			log.Infof("Deployment Namespace: %s", r.Namespace) // how to get namespace?
