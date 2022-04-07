@@ -64,6 +64,16 @@ func validateCreate() admissioncontroller.AdmitFunc {
 			if t1 > t2 {
 				return &admissioncontroller.Result{Allowed: false, Msg: "CPU request above global CPU cap"}, nil
 			} else {
+					if v, ok := cm.ApplicationCaps[container.Name]; ok {
+						cpu, err := strconv.Atoi(v).(int64)
+						if err != nil {
+							return &admissioncontroller.Result{Allowed: false, Msg: "Error converting application cap value to int: %s", err}, nil
+						}
+						if t1 > cpu {
+							return &admissioncontroller.Result{Allowed: false, Msg: "Container requested more CPU than application-specific cap allows"}, nil
+						}
+					}
+				}
 				log.Infof("Container req %s is less than global cap of %s", t1, t2)
 			}
 		}
