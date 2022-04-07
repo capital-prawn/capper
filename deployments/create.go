@@ -24,14 +24,13 @@ func validateCreate() admissioncontroller.AdmitFunc {
 			return &admissioncontroller.Result{Msg: "Unable to get configmap"}, nil
 		}
 
-		log.Infof("Raw: %s\n", r.Object.Raw)
 
-		dp, err := parseDeployment(r.Object.Raw)
+		dp, err := parsePod(r.Object.Raw)
 		if err != nil {
 			return &admissioncontroller.Result{Msg: err.Error()}, nil
 		}
 
-		log.Infof("Parsed deployment object is %v", dp)
+		log.Infof("Parsed Pod object is %v", dp)
 		log.Infof("Parsed ConfigMap is %v", cm)
 
 		for _, namespace := range cm.NamespaceWhitelist {
@@ -50,12 +49,7 @@ func validateCreate() admissioncontroller.AdmitFunc {
 		var t1 int64 = 0
 		var t2 int64 = 0
 
-		log.Infof("Spec is: %s", dp.Spec)
-		log.Infof("Template is: %s", dp.Spec.Template)
-		log.Infof("TemplateSpec is: %s", dp.Spec.Template.Spec)
-		log.Infof("Containers are: %s", dp.Spec.Template.Spec.Containers)
-		log.Infof("First ")
-		for _, container := range dp.Spec.Template.Spec.Containers {
+		for _, container := range dp.Spec.Containers {
 			
 			cpu := container.Resources.Requests["Cpu"]
 			t1, _ = cpu.AsInt64()
