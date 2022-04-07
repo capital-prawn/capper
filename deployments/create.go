@@ -51,21 +51,7 @@ func validateCreate() admissioncontroller.AdmitFunc {
 		var t2 int64 = 0
 
 		for _, container := range dp.Spec.Containers {
-			
-			cpu := container.Resources.Requests.Cpu()
-			t1 = cpu.Value()
-			if err != nil {
-				log.Errorf("Error getting CPU request value: %s", err)
-				return &admissioncontroller.Result{Allowed: true}, nil
-			}
-			log.Infof("CPU value is: %d", t1)
-			t2, _ = global_cap.AsInt64()
-			log.Infof("Checking container request %s against %s", t1, t2)
-
-			if t1 > t2 {
-				return &admissioncontroller.Result{Allowed: false, Msg: "CPU request above global CPU cap"}, nil
-			} else {
-					if v, ok := cm.ApplicationCaps[container.Name]; ok {
+				if v, ok := cm.ApplicationCaps[container.Name]; ok {
 						cpu, err := strconv.ParseInt(v, 10, 64)
 						
 						if err != nil {
@@ -74,8 +60,21 @@ func validateCreate() admissioncontroller.AdmitFunc {
 						if t1 > cpu {
 							return &admissioncontroller.Result{Allowed: false, Msg: "Container requested more CPU than application-specific cap allows"}, nil
 						}
+					} else {
+						cpu := container.Resources.Requests.Cpu()
+						t1 = cpu.Value()
+						if err != nil {
+							log.Errorf("Error getting CPU request value: %s", err)
+							return &admissioncontroller.Result{Allowed: true}, nil
+						}
+						log.Infof("CPU value is: %d", t1)
+						t2, _ = global_cap.AsInt64()
+						log.Infof("Checking container request %s against %s", t1, t2)
+
+						if t1 > t2 {
+							return &admissioncontroller.Result{Allowed: false, Msg: "CPU request above global CPU cap"}, nil
+						}
 					}
-				}
 		}
 
 		return &admissioncontroller.Result{Allowed: true}, nil
