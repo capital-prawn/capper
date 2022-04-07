@@ -51,7 +51,7 @@ func validateCreate() admissioncontroller.AdmitFunc {
 
 		for _, container := range dp.Spec.Containers {
 			
-			cpu := container.Resources.Requests["Cpu"]
+			cpu := container.Resources.Requests.Cpu()
 			t1 = cpu.Value()
 			if err != nil {
 				log.Errorf("Error getting CPU request value: %s", err)
