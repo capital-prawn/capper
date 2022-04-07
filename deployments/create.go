@@ -12,6 +12,7 @@ import (
 	"encoding/json"
 	"context"
 	log "k8s.io/klog/v2"
+	"strconv"
 )
 
 func validateCreate() admissioncontroller.AdmitFunc {
@@ -65,22 +66,22 @@ func validateCreate() admissioncontroller.AdmitFunc {
 				return &admissioncontroller.Result{Allowed: false, Msg: "CPU request above global CPU cap"}, nil
 			} else {
 					if v, ok := cm.ApplicationCaps[container.Name]; ok {
-						cpu, err := strconv.Atoi(v).(int64)
+						cpu, err := strconv.ParseInt(v, 10, 64)
+						
 						if err != nil {
-							return &admissioncontroller.Result{Allowed: false, Msg: "Error converting application cap value to int: %s", err}, nil
+							return &admissioncontroller.Result{Allowed: false, Msg: "Error converting application cap value to int"}, nil
 						}
 						if t1 > cpu {
 							return &admissioncontroller.Result{Allowed: false, Msg: "Container requested more CPU than application-specific cap allows"}, nil
 						}
 					}
 				}
-				log.Infof("Container req %s is less than global cap of %s", t1, t2)
-			}
 		}
 
 		return &admissioncontroller.Result{Allowed: true}, nil
 	}
 }
+
 
 func getConfigMap() (*CapperConfigMap, error) {
 	log.Infof("Get ConfigMap")
