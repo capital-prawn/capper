@@ -2,15 +2,15 @@ package deployments
 
 import (
 	admissioncontroller "github.com/capital-prawn/capper"
-	
+
 	"k8s.io/api/admission/v1"
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/rest"
 	c "k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	
-	"encoding/json"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
+
 	"context"
+	"encoding/json"
 	log "k8s.io/klog/v2"
 	"strconv"
 )
@@ -25,7 +25,6 @@ func validateCreate() admissioncontroller.AdmitFunc {
 			return &admissioncontroller.Result{Msg: "Unable to get configmap"}, nil
 		}
 
-
 		dp, err := parsePod(r.Object.Raw)
 		if err != nil {
 			return &admissioncontroller.Result{Msg: err.Error()}, nil
@@ -39,7 +38,7 @@ func validateCreate() admissioncontroller.AdmitFunc {
 
 		// Now let's set it to the global cap
 		global_cap := c.MustParse(cm.GlobalCap)
-		
+
 		if err != nil {
 			return &admissioncontroller.Result{Allowed: false, Msg: "Global CPU cap in config map was not able to be converted to an integer"}, nil
 		}
@@ -48,37 +47,36 @@ func validateCreate() admissioncontroller.AdmitFunc {
 		var t2 int64 = 0
 
 		for _, container := range dp.Spec.Containers {
-				if v, ok := cm.ApplicationCaps[container.Name]; ok {
-						cpu, err := strconv.ParseInt(v, 10, 64)
-						
-						if err != nil {
-							return &admissioncontroller.Result{Allowed: false, Msg: "Error converting application cap value to int"}, nil
-						}
-						if t1 > cpu {
-							
-							return &admissioncontroller.Result{Allowed: false, Msg: "Container requested more CPU than application-specific cap allows"}, nil
-						}
-					} else {
-					cpu := container.Resources.Requests.Cpu()
-						t1 = cpu.Value()
-						if err != nil {
-							log.Errorf("Error getting CPU request value: %s", err)
-							return &admissioncontroller.Result{Allowed: true}, nil
-						}
-						log.Infof("CPU value is: %d", t1)
-						t2, _ = global_cap.AsInt64()
-						log.Infof("Checking container request %s against %s", t1, t2)
+			if v, ok := cm.ApplicationCaps[container.Name]; ok {
+				cpu, err := strconv.ParseInt(v, 10, 64)
 
-						if t1 > t2 {
-							return &admissioncontroller.Result{Allowed: false, Msg: "CPU request above global CPU cap"}, nil
-						}
-					}
+				if err != nil {
+					return &admissioncontroller.Result{Allowed: false, Msg: "Error converting application cap value to int"}, nil
+				}
+				if t1 > cpu {
+
+					return &admissioncontroller.Result{Allowed: false, Msg: "Container requested more CPU than application-specific cap allows"}, nil
+				}
+			} else {
+				cpu := container.Resources.Requests.Cpu()
+				t1 = cpu.Value()
+				if err != nil {
+					log.Errorf("Error getting CPU request value: %s", err)
+					return &admissioncontroller.Result{Allowed: true}, nil
+				}
+				log.Infof("CPU value is: %d", t1)
+				t2, _ = global_cap.AsInt64()
+				log.Infof("Checking container request %s against %s", t1, t2)
+
+				if t1 > t2 {
+					return &admissioncontroller.Result{Allowed: false, Msg: "CPU request above global CPU cap"}, nil
+				}
+			}
 		}
 
 		return &admissioncontroller.Result{Allowed: true}, nil
 	}
 }
-
 
 func getConfigMap() (*CapperConfigMap, error) {
 	config, err := rest.InClusterConfig()
@@ -95,11 +93,11 @@ func getConfigMap() (*CapperConfigMap, error) {
 		return nil, err
 	}
 	return ccm, nil
-	
+
 }
 
 type CapperConfigMap struct {
-	NamespaceWhitelist []string `json:"namespace_whitelist"`
-    ApplicationCaps map[string]string `json:"cpu_request_caps"`
-    GlobalCap string `json:"global_cpu_request_cap"`
+	NamespaceWhitelist []string          `json:"namespace_whitelist"`
+	ApplicationCaps    map[string]string `json:"cpu_request_caps"`
+	GlobalCap          string            `json:"global_cpu_request_cap"`
 }

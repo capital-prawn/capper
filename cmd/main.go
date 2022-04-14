@@ -1,19 +1,20 @@
 package main
 
 import (
-	log "k8s.io/klog/v2"
-	http "github.com/capital-prawn/capper/http"
 	"context"
 	"flag"
+	http "github.com/capital-prawn/capper/http"
+	log "k8s.io/klog/v2"
 	"os"
 	"os/signal"
 	"syscall"
 	// core "k8s.io/api/core/v1"
 	// metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
+
 var (
-	port string
-	tlskey string
+	port    string
+	tlskey  string
 	tlscert string
 )
 

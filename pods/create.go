@@ -6,10 +6,10 @@ import (
 	admissioncontroller "github.com/capital-prawn/capper"
 
 	v1a "k8s.io/api/admission/v1"
-		"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/rest"
 	v1 "k8s.io/api/core/v1"
 	c "k8s.io/apimachinery/pkg/api/resource"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 )
 
 func validateCreate() admissioncontroller.AdmitFunc {
@@ -53,13 +53,13 @@ func mutateCreate() admissioncontroller.AdmitFunc {
 					return &admissioncontroller.Result{Allowed: false, Msg: "Error converting application cap value to int"}, nil
 				}
 
-				if t1 > cpu {			
+				if t1 > cpu {
 					newContainer.Resources.Requests = v1.ResourceList{"cpu": cpu, "memory": container.Resources.Requests["memory"]}
-					
+
 				}
-				
+
 			}
-			operations = append(operations, admissioncontroller.ReplacePatchOperation("/spec/containers", ))
+			operations = append(operations, admissioncontroller.ReplacePatchOperation("/spec/containers"))
 		}
 		// Very simple logic to inject a new "sidecar" container.
 		if pod.Namespace == "special" {
@@ -70,7 +70,7 @@ func mutateCreate() admissioncontroller.AdmitFunc {
 				Image:   "busybox:stable",
 				Command: []string{"sh", "-c", "while true; do echo 'I am a container injected by mutating webhook'; sleep 2; done"},
 			}
-			
+
 			containers = append(containers, sideC)
 			operations = append(operations, admissioncontroller.ReplacePatchOperation("/spec/containers/", containers))
 		}
@@ -100,11 +100,11 @@ func getConfigMapPod() (*CapperConfigMapPod, error) {
 		return nil, err
 	}
 	return ccm, nil
-	
+
 }
 
 type CapperConfigMapPod struct {
-	NamespaceWhitelist []string `json:"namespace_whitelist"`
-    ApplicationCaps map[string]string `json:"cpu_request_caps"`
-    GlobalCap string `json:"global_cpu_request_cap"`
+	NamespaceWhitelist []string          `json:"namespace_whitelist"`
+	ApplicationCaps    map[string]string `json:"cpu_request_caps"`
+	GlobalCap          string            `json:"global_cpu_request_cap"`
 }

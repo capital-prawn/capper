@@ -26,7 +26,7 @@ func parseDeployment(object []byte) (*v1.Deployment, error) {
 	return &dp, nil
 }
 
-func parsePod(object []byte)(*core.Pod, error) {
+func parsePod(object []byte) (*core.Pod, error) {
 	var p core.Pod
 	if err := json.Unmarshal(object, &p); err != nil {
 		return nil, err
