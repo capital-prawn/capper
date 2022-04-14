@@ -31,16 +31,13 @@ func validateCreate() admissioncontroller.AdmitFunc {
 			return &admissioncontroller.Result{Msg: err.Error()}, nil
 		}
 
-		log.Infof("Parsed Pod object is %v", dp)
-		log.Infof("Parsed ConfigMap is %v", cm)
-
 		for _, namespace := range cm.NamespaceWhitelist {
 			if namespace == r.Namespace {
 				return &admissioncontroller.Result{Allowed: true, Msg: "Deployment is in a whitelisted namespace, skipping"}, nil
 			}
 		}
 
-		// // Now let's set it to the global cap
+		// Now let's set it to the global cap
 		global_cap := c.MustParse(cm.GlobalCap)
 		
 		if err != nil {
@@ -58,10 +55,11 @@ func validateCreate() admissioncontroller.AdmitFunc {
 							return &admissioncontroller.Result{Allowed: false, Msg: "Error converting application cap value to int"}, nil
 						}
 						if t1 > cpu {
+							
 							return &admissioncontroller.Result{Allowed: false, Msg: "Container requested more CPU than application-specific cap allows"}, nil
 						}
 					} else {
-						cpu := container.Resources.Requests.Cpu()
+					cpu := container.Resources.Requests.Cpu()
 						t1 = cpu.Value()
 						if err != nil {
 							log.Errorf("Error getting CPU request value: %s", err)
@@ -83,7 +81,6 @@ func validateCreate() admissioncontroller.AdmitFunc {
 
 
 func getConfigMap() (*CapperConfigMap, error) {
-	log.Infof("Get ConfigMap")
 	config, err := rest.InClusterConfig()
 	clientset, err := kubernetes.NewForConfig(config)
 	result, err := clientset.CoreV1().ConfigMaps("capper").Get(context.TODO(), "franks-limit-suggester", metav1.GetOptions{})
